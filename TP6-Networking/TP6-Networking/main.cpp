@@ -20,7 +20,9 @@ int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 
 			}
 		}
-		Client C(S.getNext(),PORT);
+		//Client C(S.getNext(),PORT);
+		Client C();
+		C.startConnection(S.getNext());
 		C.sendSeq(S.getMsg());
 	} while (!S.getQuit());
 
