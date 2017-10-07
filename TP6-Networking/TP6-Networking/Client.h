@@ -16,6 +16,7 @@ class Client
 public:
 	Client();
 	~Client();
+	void startConnection(const char* host);
 	void sendSeq(int a);
 private:
 	boost::asio::io_service* IO_handler;
