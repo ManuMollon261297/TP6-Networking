@@ -38,6 +38,14 @@ Client::~Client() {
 	delete IO_handler;
 }
 
+void Client::startConnection(const char* host) {
+	endpoint = client_resolver->resolve(
+		boost::asio::ip::tcp::resolver::query(host, PORT));
+	//cout << "Trying to connect to " << host << " on port " << PORT << std::endl;
+	boost::asio::connect(*socket_forClient, endpoint);
+	socket_forClient->non_blocking(true);
+}
+
 /*
 
 class client {
