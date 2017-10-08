@@ -17,7 +17,7 @@ public:
 	void listening();
 	void getSequence();
 	bool noerrror();
-	bool itsMe();
+	bool itsMe(const char * mi_ip, char buff[]);
 	bool lastOne();
 	void getNext();
 	void getMsg();
@@ -51,6 +51,17 @@ Server::~Server() {
 	delete server_acceptor;
 	delete socket_forServer;
 	delete IO_handler;
+}
+
+bool Server::itsMe(const char * mi_ip, char buff[]) {
+	ifstream ipData("IPDATA.txt");
+	char ipNew[16];
+	for (char i = 0; i < buff[1]; i++) {		//Ignoro las lineas hasta llegar a la ip actual
+		ipData.ignore(16, '\n');
+	}
+	ipData.getline(ipNew, 16);
+
+	return !(strcmp(mi_ip,ipNew));
 }
 
 /*
