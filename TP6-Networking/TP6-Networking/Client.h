@@ -6,7 +6,7 @@
 #include <boost/timer/timer.hpp>
 
 
-#define PORT "50013"
+#define PORT 12345
 #define SERVER_IP "localhost"
 
 using namespace std;
@@ -17,7 +17,7 @@ public:
 	Client();
 	~Client();
 	void startConnection(const char* host);
-	void sendSeq(int a);
+	void sendSeq(char * msg);
 private:
 	boost::asio::io_service* IO_handler;
 	boost::asio::ip::tcp::socket* socket_forClient;

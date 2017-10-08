@@ -2,8 +2,9 @@
 
 
 
-Animation::Animation()
+Animation::Animation(char type_)
 {
+	type = type_;
 }
 
 

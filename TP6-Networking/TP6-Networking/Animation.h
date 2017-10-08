@@ -2,7 +2,9 @@
 class Animation
 {
 public:
-	Animation();
+	Animation(char type_);
 	~Animation();
+private:
+	char type;
 };
 
