@@ -123,7 +123,22 @@ char Server::getAnim()
 	return animation;
 }
 
-char getUserSequence(Server & S) //TERMINAR
+void Server::setAnim(char anim)
 {
-	return 0;
+	animation = anim;
+}
+
+void getUserSequence(Server& S) //TERMINAR
+{
+	char anim;
+	std::cout << "Choose nest animation" << std::endl;
+	do
+	{
+		cin >> anim;
+		if ((anim < 'A') || (anim > 'F'))
+		{
+			std::cout << "Invalid animation" << std::endl;
+		}
+	} while ((anim < 'A') || (anim > 'F'));
+	S.setAnim(anim);
 }

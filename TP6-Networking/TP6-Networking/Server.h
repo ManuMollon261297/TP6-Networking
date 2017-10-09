@@ -28,9 +28,9 @@ public:
 	bool getQuit();
 	void setTurno(int turno);
 	char getAnim();
+	void setAnim(char anim);
 private:
 	bool quit_status;
-	friend char getUserSequence(Server& S);
 	int turno;
 	char sequence;
 	bool error_status;
@@ -42,6 +42,9 @@ private:
 	boost::asio::ip::tcp::socket* socket_forServer;
 	boost::asio::ip::tcp::acceptor* server_acceptor;
 };
+
+
+void getUserSequence(Server& S);
 
 /*
 
