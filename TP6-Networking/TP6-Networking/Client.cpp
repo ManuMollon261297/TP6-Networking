@@ -3,4 +3,5 @@
 
 void Client::sendSeq(char * msg)
 {
+
 }

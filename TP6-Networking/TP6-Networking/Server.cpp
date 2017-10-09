@@ -5,8 +5,8 @@ Server::Server(int port) {
 	IO_handler = new boost::asio::io_service();
 	socket_forServer = new boost::asio::ip::tcp::socket(*IO_handler);
 	server_acceptor = new boost::asio::ip::tcp::acceptor(*IO_handler,
-		boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), PORT));
-	std::cout << std::endl << "Ready, Port: " << PORT << " created" << std::endl;
+		boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), PORT_S));
+	std::cout << std::endl << "Ready, Port: " << PORT_S << " created" << std::endl;
 	error_status = false;
 	quit_status = false;
 	sequence = '0';
@@ -93,7 +93,7 @@ bool Server::lastOne()
 
 }
 
-char * Server::getNext()
+char * Server::getNext() //arreglar con sequence 
 {
 	ifstream ipData("direcciones.txt");
 	for (char i = 0; i < buf[1]+1; i++) {		//Ignoro las lineas hasta llegar a la proxima ip
@@ -128,13 +128,13 @@ void Server::setAnim(char anim)
 	animation = anim;
 }
 
-void getUserSequence(Server& S) //TERMINAR
+void getUserSequence(Server& S) //TERMINAR PARTE DE SEQUENCE
 {
 	char anim;
-	std::cout << "Choose nest animation" << std::endl;
+	std::cout << "Choose next animation" << std::endl;
 	do
 	{
-		cin >> anim;
+		std::cin >> anim;
 		if ((anim < 'A') || (anim > 'F'))
 		{
 			std::cout << "Invalid animation" << std::endl;

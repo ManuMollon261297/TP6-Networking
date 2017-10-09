@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define PORT 12345
+#define PORT_S 12345
 #define YO	1
 #define ESCUCHO 2
 
