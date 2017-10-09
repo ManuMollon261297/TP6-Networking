@@ -1,11 +1,11 @@
 #include <iostream>
-#include "Animation.h"
 #include "Output.h"
 #include "Client.h"
 #include "Server.h"
 
 int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 {								 // Param 2 (opcional) = Inicial
+								 // Param 3 (opcional) = Sequencia , si no hay es 1,2,3,4,5...etc;
 	
 	Server S(PORT_S);
 	do{
