@@ -3,6 +3,8 @@
 #include "Client.h"
 #include "Server.h"
 
+
+
 int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 {								 // Param 2 (opcional) = Inicial
 								 // Param 3 (opcional) = Sequencia , si no hay es 1,2,3,4,5...etc;
@@ -11,7 +13,7 @@ int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 	do{
 		//revisar argv a ver si es el inicial o no, modificar S.turno segun esto
 		// inicializar allegro
-		char my_ip[16]; //llenar con el param 1 de ip propia
+		char my_ip[16]="IP"; //llenar con el param 1 de ip propia
 		S.listening();
 		S.getSequence(); 
 		if(S.noerrror()&&S.itsMe(my_ip))
@@ -22,6 +24,12 @@ int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 			{
 				getUserSequence(S);
 			}
+		}
+		else if (!S.noerrror())
+		{
+			std::cout << "Error in package YOU_GO, animation skipped for this IP adress" << endl <<
+				"Closing application" << endl;
+			S.setQuit(true);
 		}
 		Client C(S.getNext());
 		C.startConnection(S.getNext());

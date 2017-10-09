@@ -18,24 +18,34 @@ class Server
 public:
 	Server(int port);
 	~Server();
+
 	void listening();
-	char getSequence();
 	bool noerrror();
 	bool itsMe(const char * mi_ip);
 	bool lastOne();
+
+	void getSequence();
 	char * getNext();
 	char * getMsg();
 	bool getQuit();
-	void setTurno(int turno);
 	char getAnim();
+	int getipsCount();
+
 	void setAnim(char anim);
+	void setTurno(int turno);
+	void setQuit(bool stat);
+
 private:
 	bool quit_status;
-	int turno;
-	char sequence;
 	bool error_status;
-	char buf[512];
+
+	int turno;
+	int ipsCount;
+
 	char animation;
+
+	char sequence[255];
+	char buf[512];
 	char ipNext[16];
 
 	boost::asio::io_service*  IO_handler;
