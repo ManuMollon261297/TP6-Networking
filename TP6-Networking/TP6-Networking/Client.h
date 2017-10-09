@@ -5,10 +5,11 @@
 #include <boost/asio.hpp>
 #include <boost/chrono.hpp>
 #include <boost/timer/timer.hpp>
-
+#include <iostream>
 
 #define PORT_C "12345"
 #define SERVER_IP "localhost"
+#define MAX_BUF	257
 
 using namespace std;
 
@@ -26,33 +27,6 @@ private:
 	boost::asio::ip::tcp::resolver::iterator endpoint;
 	char NextIp[16];
 };
-
-
-Client::Client(const char * ip) {
-	IO_handler = new boost::asio::io_service();
-	socket_forClient = new boost::asio::ip::tcp::socket(*IO_handler);
-	client_resolver = new boost::asio::ip::tcp::resolver(*IO_handler);
-	for (int i = 0; i < 16; i++)
-	{
-		NextIp[i] = ip[0];
-	}
-
-}
-
-Client::~Client() {
-	socket_forClient->close();
-	delete client_resolver;
-	delete socket_forClient;
-	delete IO_handler;
-}
-
-void Client::startConnection(const char* host) {
-	endpoint = client_resolver->resolve(boost::asio::ip::tcp::resolver::query(host, PORT_C);
-	//endpoint = client_resolver->resolve(boost::asio::ip::tcp::resolver::query(host,);
-	//cout << "Trying to connect to " << host << " on port " << PORT << std::endl;
-	boost::asio::connect(*socket_forClient, endpoint);
-	socket_forClient->non_blocking(true);
-}
 
 /*
 
