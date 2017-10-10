@@ -21,15 +21,20 @@ Server::~Server() {
 }
 
 void Server::listening() {
-	server_acceptor->accept(*socket_forServer);
-	socket_forServer->non_blocking(true);
 	switch (turno)
 	{
 		case YO:
 		{
+
+			buf[0] = animation;
+			buf[1] = 1;
+			buf[2] = 1;
+			buf[3] = 2;
 		}break;
 		case ESCUCHO:
 		{
+			server_acceptor->accept(*socket_forServer);
+			socket_forServer->non_blocking(true);
 			size_t len = 0;
 			boost::system::error_code error;
 			cout << "Recibiendo mensaje del Client" << std::endl;
@@ -54,7 +59,7 @@ void Server::listening() {
 bool Server::itsMe(const char * mi_ip) {
 	ifstream ipData("direcciones.txt");
 	char ipNew[16];
-	for (char i = 0; i < buf[1]; i++) {		//Ignoro las lineas hasta llegar a la ip actual
+	for (char i = 0; i < (buf[1]-1); i++) {		//Ignoro las lineas hasta llegar a la ip actual
 		ipData.ignore(16, '\n');
 	}
 	ipData.getline(ipNew, 16);
@@ -68,6 +73,8 @@ void Server::getSequence() //agregar chequeo de error de repetir secuencia
 	{
 		case YO:
 		{
+			sequence[0] = 1;
+			sequence[1] = 2;
 			//copio sequenca de argv a sequence[]
 		}break;
 		case ESCUCHO:
@@ -113,7 +120,7 @@ bool Server::lastOne()
 		ipData.ignore(16, '\n');
 		counter++;
 	} while (!(ipData.eofbit));
-	if (buf[1] == counter)
+	if ((buf[1]-1) == counter)
 	{
 		return true;
 	}
@@ -127,9 +134,14 @@ bool Server::lastOne()
 char * Server::getNext()
 {
 	ifstream ipData("direcciones.txt");
-	int count = buf[1];
-	int next_in_sequence = buf[count+2];
-	for (char i = 0; i < next_in_sequence; i++) {		//Ignoro las lineas hasta llegar a la proxima ip
+	int count = buf[1]+1;
+	int i = 0;
+	while (buf[i + 2] != count)
+	{
+		i++;
+	}
+	//int next_in_sequence = buf[count+2];
+	for (int j = 0; j < buf[i+1]; j++) {		//Ignoro las lineas hasta llegar a la proxima ip
 		ipData.ignore(16, '\n');
 	}
 	ipData.getline(ipNext, 16);
@@ -175,6 +187,7 @@ void getUserSequence(Server& S) //chequear errores de sequence
 {
 	char anim;
 	int seq;
+	S.buf[1] = 1;
 	std::cout << "Choose next animation: (A-F)" << std::endl;
 	do
 	{
@@ -191,12 +204,18 @@ void getUserSequence(Server& S) //chequear errores de sequence
 	std::cout << "Choose next sequence:" << std::endl;
 	for (int i=0;i< S.getipsCount() ;i++)
 	{
+		int j = 0;
 		do
 		{
 			std::cin >> seq;
 			if ((seq < 0) || (anim > 255))
 			{
 				std::cout << "Invalid sequence number" << std::endl;
+			}
+			else
+			{
+				S.buf[2 + j] = seq;
+				j++;
 			}
 		} while ((seq < 0) || (anim > 255));
 	}

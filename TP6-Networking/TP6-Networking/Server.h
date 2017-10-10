@@ -35,6 +35,8 @@ public:
 	void setTurno(int turno);
 	void setQuit(bool stat);
 
+	char buf[512];
+
 private:
 	bool quit_status;
 	bool error_status;
@@ -45,7 +47,6 @@ private:
 	char animation;
 
 	char sequence[255];
-	char buf[512];
 	char ipNext[16];
 
 	boost::asio::io_service*  IO_handler;

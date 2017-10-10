@@ -2,18 +2,31 @@
 #include "Output.h"
 #include "Client.h"
 #include "Server.h"
-
+#include <cstdlib>
 
 
 int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 {								 // Param 2 (opcional) = Inicial
 								 // Param 3 (opcional) = Sequencia , si no hay es 1,2,3,4,5...etc;
-	
+	if (!al_init())
+	{
+		exit (-1);
+	}
+	bool asd = true;
 	Server S(PORT_S);
 	do{
 		//revisar argv a ver si es el inicial o no, modificar S.turno segun esto
-		// inicializar allegro
-		char my_ip[16]="IP"; //llenar con el param 1 de ip propia
+		if (asd)
+		{
+			S.setTurno(YO);
+			S.setAnim('B');
+		}
+		else
+		{
+			S.setTurno(ESCUCHO);
+		}
+		asd = !asd;
+		char my_ip[16]="25.72.35.65"; //llenar con el param 1 de ip propia
 		S.listening();
 		S.getSequence(); 
 		if(S.noerrror()&&S.itsMe(my_ip))
