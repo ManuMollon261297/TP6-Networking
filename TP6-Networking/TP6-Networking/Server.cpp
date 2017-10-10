@@ -102,6 +102,7 @@ void Server::getSequence() //agregar chequeo de error de repetir secuencia
 					sequence[i] = buf[i + 2];
 				}
 			}
+			setTurno(ESCUCHO);
 		}break;
 	}
 }
