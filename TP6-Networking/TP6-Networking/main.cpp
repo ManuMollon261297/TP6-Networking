@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 
 int Callback(char *key, char *value, void *userData) {
 
-	int errfl = ON;										//Dado que no se aceptan más de una misma llamada a un parametro, se utiliza un flag 
+	int errfl = ON;										//Dado que no se aceptan mÃ¡s de una misma llamada a un parametro, se utiliza un flag 
 	userDataType *uData = (userDataType*)userData;		//para verificar que el parametro no fue llamado anteriormente.
 	char*aux[] = { "255","255","255","255" };						//Se castea el puntero a void por portabilidad del Parser
 	char aux2[255];
@@ -116,9 +116,7 @@ int Callback(char *key, char *value, void *userData) {
 			return -1;
 		}
 	}
-
-
-	if (!strcmp(key, "IP")) {
+	else if (!strcmp(key, "IP")) {
 		if (uData->Flag->myIP == "OFF") {
 			if (strchr(value, '.') != NULL) {		//Si contiene un punto, debe ser del formato xxx.xxx.x.xxx de IPv4
 				strcpy(aux2, value);
