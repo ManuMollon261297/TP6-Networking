@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 	userDataType uData = { NULL, "255.255.255.255", OFF};
 	userDataType Flags = { NULL, "OFF", OFF};
 	uData.Flag = &Flags;
-
+	uData.myIP;
 	if (parsecmdline(argc, argv, &Callback, &uData) == -1)
 	{
 		exit(-1);
@@ -35,7 +35,6 @@ int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 		exit (-1);
 	}
 	//Verifica datos compatibles y los printea si no hay error
-	printf("%s", &uData.myIP[0]);
 	Server S(PORT_S);
 	if (Flags.inicia)
 	{
@@ -45,8 +44,13 @@ int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 	{
 		S.setTurno(ESCUCHO);
 	}
-	char my_ip[16] = "25.72.35.65";
-	//char my_ip[16] = (uData->myIP);
+	//char my_ip[16] = "25.72.35.65";
+	char my_ip[16];
+	for (int i=0;i< uData.myIP.length();i++)
+	{
+		my_ip[i] = uData.myIP[i];
+	}
+	cout << "Own IP:" << my_ip << endl;
 	do{
 		S.listening();
 		S.getSequence(); 
@@ -88,7 +92,7 @@ int Callback(char *key, char *value, void *userData) {
 	int errfl = ON;										//Dado que no se aceptan más de una misma llamada a un parametro, se utiliza un flag 
 	userDataType *uData = (userDataType*)userData;		//para verificar que el parametro no fue llamado anteriormente.
 	char*aux[] = { "255","255","255","255" };						//Se castea el puntero a void por portabilidad del Parser
-																	//char*aux2[255];														//aux se utiliza para la lectura de -color en formato R,G,B
+	char aux2[255];
 																	//unsigned int machines=0;
 
 	if (key == NULL) {
@@ -117,7 +121,8 @@ int Callback(char *key, char *value, void *userData) {
 	if (!strcmp(key, "IP")) {
 		if (uData->Flag->myIP == "OFF") {
 			if (strchr(value, '.') != NULL) {		//Si contiene un punto, debe ser del formato xxx.xxx.x.xxx de IPv4
-				aux[0] = strtok(value, ".");			//En cuyo caso se separan los strings entre los puntos.
+				strcpy(aux2, value);
+				aux[0] = strtok(aux2, ".");			//En cuyo caso se separan los strings entre los puntos.
 				aux[1] = strtok(NULL, ".");
 				aux[2] = strtok(NULL, ".");
 				aux[3] = strtok(NULL, ".");

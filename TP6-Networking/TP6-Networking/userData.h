@@ -6,5 +6,4 @@
 		userDataType *Flag;
 		string myIP;
 		bool inicia;
-		//string sequence;
 	} userData;
