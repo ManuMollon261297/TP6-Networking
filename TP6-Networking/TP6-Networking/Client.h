@@ -8,7 +8,6 @@
 #include <iostream>
 
 #define PORT_C "12345"
-#define SERVER_IP "localhost"
 #define MAX_BUF	257
 
 using namespace std;
