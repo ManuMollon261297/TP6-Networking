@@ -14,8 +14,7 @@ Client::Client(const char * ip) {
 
 void Client::sendSeq(char * msg) {
 	char buf[MAX_BUF];
-	int i;
-	for (i = 0; i < MAX_BUF; i++) {
+	for (int i = 0; i < MAX_BUF; i++) {
 		buf[i] = msg[i];
 	}
 	buf[1]++;

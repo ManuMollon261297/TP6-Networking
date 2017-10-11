@@ -25,25 +25,27 @@ void Server::listening() {
 	{
 		case YO:
 		{
-
+			sequence[0] = 1;
+			sequence[1] = 2;
 			buf[0] = animation;
 			buf[1] = 1;
-			buf[2] = 1;
-			buf[3] = 2;
+			buf[2] = sequence[0];
+			buf[3] = sequence[1];
+			//copio sequencia de argv a sequence[]
 		}break;
 		case ESCUCHO:
 		{
+			cout << "Esperando mensaje del Client" << std::endl;
 			server_acceptor->accept(*socket_forServer);
 			socket_forServer->non_blocking(true);
 			size_t len = 0;
 			boost::system::error_code error;
-			cout << "Recibiendo mensaje del Client" << std::endl;
 			do
 			{
 				len = socket_forServer->read_some(boost::asio::buffer(buf), error);
 
 			} while (error.value() == WSAEWOULDBLOCK);
-			std::cout << std::endl << "Client dice: " << buf << std::endl;
+			std::cout << std::endl << "Client dice: " << buf[0] << *(buf+1) << std::endl;
 			if ((buf[0] >= 'A') && (buf[0] <= 'F'))
 			{
 				animation = buf[0];
@@ -57,6 +59,7 @@ void Server::listening() {
 }
 
 bool Server::itsMe(const char * mi_ip) {
+	/*
 	ifstream ipData("direcciones.txt");
 	char ipNew[16];
 	for (char i = 0; i < (buf[1]-1); i++) {		//Ignoro las lineas hasta llegar a la ip actual
@@ -64,6 +67,20 @@ bool Server::itsMe(const char * mi_ip) {
 	}
 	ipData.getline(ipNew, 16);
 
+	return !(strcmp(mi_ip, ipNew));
+	*/
+	char ipNew[16];
+	ifstream ipData("direcciones.txt");
+	int count = buf[1];
+	int i = 0;
+	while (buf[i + 2] != count)
+	{
+		i++;
+	}
+	for (int j = 0; j < i; j++) {		//Ignoro las lineas hasta llegar a la proxima ip
+		ipData.ignore(16, '\n');
+	}
+	ipData.getline(ipNew, 16);
 	return !(strcmp(mi_ip, ipNew));
 }
 
@@ -73,15 +90,28 @@ void Server::getSequence() //agregar chequeo de error de repetir secuencia
 	{
 		case YO:
 		{
-			sequence[0] = 1;
-			sequence[1] = 2;
-			//copio sequenca de argv a sequence[]
+			ifstream ipData("direcciones.txt");
+			char ipNew[16];
+			char ip_number = 1;
+			do {
+				ipData.ignore(16, '\n');
+				ip_number++;
+			} while (!(ipData.eofbit));
+			if (ip_number > 255)
+			{
+				error_status = true;
+			}
+			else
+			{
+				ipsCount = ip_number;
+			}
+			setTurno(ESCUCHO);
 		}break;
 		case ESCUCHO:
 		{
 			ifstream ipData("direcciones.txt");
 			char ipNew[16];
-			char ip_number = 0;
+			char ip_number = 1;
 			do {
 				ipData.ignore(16, '\n');
 				ip_number++;
@@ -102,7 +132,6 @@ void Server::getSequence() //agregar chequeo de error de repetir secuencia
 					sequence[i] = buf[i + 2];
 				}
 			}
-			setTurno(ESCUCHO);
 		}break;
 	}
 }
@@ -120,6 +149,7 @@ bool Server::lastOne()
 	do{	
 		ipData.ignore(16, '\n');
 		counter++;
+
 	} while (!(ipData.eofbit));
 	if ((buf[1]-1) == counter)
 	{
@@ -141,8 +171,7 @@ char * Server::getNext()
 	{
 		i++;
 	}
-	//int next_in_sequence = buf[count+2];
-	for (int j = 0; j < buf[i+1]; j++) {		//Ignoro las lineas hasta llegar a la proxima ip
+	for (int j = 0; j < i; j++) {		//Ignoro las lineas hasta llegar a la proxima ip
 		ipData.ignore(16, '\n');
 	}
 	ipData.getline(ipNext, 16);
@@ -169,6 +198,56 @@ void Server::setQuit(bool stat)
 	quit_status = stat;
 }
 
+bool Server::setBuf(int pos, char value)
+{
+	if((pos >= 513) || (pos < 0))
+	{
+		return false;
+	}
+	else
+	{
+		buf[pos] = value;
+		return true;
+	}
+}
+
+bool Server::setSeq(int pos, char value)
+{
+	if ((pos >= 256) || (pos < 0))
+	{
+		return false;
+	}
+	else
+	{
+		sequence[pos] = value;
+		return true;
+	}
+}
+
+char Server::getBuf(int pos)
+{
+	if ((pos >= 513) || (pos < 0))
+	{
+		return -1;
+	}
+	else
+	{
+		return buf[pos];
+	}
+}
+
+char Server::getSeq(int pos)
+{
+	if ((pos >= 255) || (pos < 0))
+	{
+		return -1;
+	}
+	else
+	{
+		return sequence[pos];
+	}
+}
+
 char Server::getAnim()
 {
 	return animation;
@@ -177,6 +256,12 @@ char Server::getAnim()
 int Server::getipsCount()
 {
 	return ipsCount;
+}
+
+void Server::closeSocket()
+{
+	//server_acceptor->close();
+	socket_forServer->close();
 }
 
 void Server::setAnim(char anim)
@@ -188,7 +273,7 @@ void getUserSequence(Server& S) //chequear errores de sequence
 {
 	char anim;
 	int seq;
-	S.buf[1] = 1;
+	S.setBuf(1, 1);
 	std::cout << "Choose next animation: (A-F)" << std::endl;
 	do
 	{
@@ -199,13 +284,12 @@ void getUserSequence(Server& S) //chequear errores de sequence
 		}
 	} while ((anim < 'A') || (anim > 'F'));
 	S.setAnim(anim);
-
+	S.setBuf(0, S.getAnim());
 
 
 	std::cout << "Choose next sequence:" << std::endl;
 	for (int i=0;i< S.getipsCount() ;i++)
 	{
-		int j = 0;
 		do
 		{
 			std::cin >> seq;
@@ -215,8 +299,7 @@ void getUserSequence(Server& S) //chequear errores de sequence
 			}
 			else
 			{
-				S.buf[2 + j] = seq;
-				j++;
+				S.setBuf(2 + i, seq);
 			}
 		} while ((seq < 0) || (anim > 255));
 	}

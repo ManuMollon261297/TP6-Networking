@@ -30,12 +30,16 @@ public:
 	bool getQuit();
 	char getAnim();
 	int getipsCount();
+	void closeSocket();
 
 	void setAnim(char anim);
 	void setTurno(int turno);
 	void setQuit(bool stat);
 
-	char buf[512];
+	bool setBuf(int pos, char value);
+	bool setSeq(int pos, char value);
+	char getBuf(int pos);
+	char getSeq(int pos);
 
 private:
 	bool quit_status;
@@ -46,8 +50,9 @@ private:
 
 	char animation;
 
-	char sequence[255];
 	char ipNext[16];
+	char buf[512];
+	char sequence[255];
 
 	boost::asio::io_service*  IO_handler;
 	boost::asio::ip::tcp::socket* socket_forServer;

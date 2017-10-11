@@ -14,16 +14,25 @@ int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 		exit (-1);
 	}
 	Server S(PORT_S);
+	S.setTurno(YO); //revisar argv a ver si es el inicial o no, modificar S.turno segun esto
+	S.setAnim('B'); //podria pasarse como parametro 
 	do{
-			S.setTurno(YO); //revisar argv a ver si es el inicial o no, modificar S.turno segun esto
-			S.setAnim('A'); //podria pasarse como parametro 
 		char my_ip[16]="25.72.35.65"; //llenar con el param 1 de ip propia
 		S.listening();
 		S.getSequence(); 
 		if(S.noerrror()&&S.itsMe(my_ip))
 		{
 			viewer V(1000, 900);
-			V.RunAnimation(S.getAnim());
+			if (V.IsInitOK())
+			{
+				V.RunAnimation(S.getAnim());
+			}
+			else
+			{
+				std::cout << "Error in allegro, animation skipped for this IP adress" << endl <<
+					"Closing application" << endl;
+				S.setQuit(true);
+			}
 			if(S.lastOne())
 			{
 				getUserSequence(S);
@@ -38,6 +47,7 @@ int main(int argc, char* argv[]) // Param 1 (mandatorio) = IP propia
 		Client C(S.getNext());
 		C.startConnection(S.getNext());
 		C.sendSeq(S.getMsg());
+		S.closeSocket();
 	} while (!S.getQuit());
 	return 0;
 }
