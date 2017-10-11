@@ -26,8 +26,13 @@ void Client::sendSeq(char * msg) {
 		len = socket_forClient->write_some(boost::asio::buffer(buf, strlen(buf)), error);
 	} while ((error.value() == WSAEWOULDBLOCK));
 	if (error)
-		std::cout<< "Error while trying to connect to server " << error.message() << std::endl;
-	std::cout << "Message Sent" << std::endl;
+	{
+		std::cout << "Error while trying to connect to server " << error.message() << std::endl;
+	}
+	else
+	{
+		std::cout << "Message Sent" << std::endl;
+	}
 }
 
 

@@ -1,5 +1,5 @@
-#ifndef USERDATA_H
-#define USERDATA_H
+#pragma once
+
 #include <string>
 
 	typedef struct userDataType{
@@ -8,5 +8,3 @@
 		bool inicia;
 		//string sequence;
 	} userData;
-
-#endif
